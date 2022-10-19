@@ -9,7 +9,11 @@
             "type": "python",
             "request": "launch",
             "module": "src.scribe",
-            "justMyCode": true
+            "justMyCode": true,
+            "args": [
+                "--count", "5",
+            ],
+            "console": "integratedTerminal"
         }
     ]
 }

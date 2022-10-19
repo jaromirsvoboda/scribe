@@ -1,19 +1,37 @@
 import logging
 import time
+import click
 
-# timestamp = time.strftime("%Y-%m-%d_%H-%M-%S_%p")
-# logging.basicConfig(
-#     filename=fr"\{timestamp}.log",
-#     filemode='a',
-#     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-#     datefmt='%H:%M:%S',
-#     level=logging.DEBUG
-# )
-# logging.getLogger().addHandler(logging.StreamHandler())
-
-
-# Hope you don't be imprisoned by legacy Python code :)
 from pathlib import Path
+
+from scribe.scribe import Scribe
+
+
+timestamp = time.strftime("%Y-%m-%d_%H-%M-%S_%p")
+logging.basicConfig(
+    filename=fr"{timestamp}.log",
+    filemode='a',
+    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    datefmt='%H:%M:%S',
+    level=logging.DEBUG
+)
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.info(f"Starting Scribe at {timestamp}.")
+
+
+
+
+@click.command()
+@click.option('--count', default=1, help='Number of greetings.')
+@click.option('--name', prompt='Your name',
+              help='The person to greet.')
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for x in range(count):
+        click.echo(f"Hello {name}!")
+
+if __name__ == '__main__':
+    hello()  # type: ignore
 
 # `cwd`: current directory is straightforward
 cwd = Path.cwd()
