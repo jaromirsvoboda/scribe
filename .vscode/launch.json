@@ -11,7 +11,8 @@
             "module": "src.scribe",
             "justMyCode": true,
             "args": [
-                "--count", "5",
+                // "--count", "5",
+                "--path", "c:\\OneDrive\\exported notes"
             ],
             "console": "integratedTerminal"
         }
