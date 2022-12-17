@@ -1,2 +1,4 @@
 click
 beautifulsoup4
+# html2markdown
+markdownify
