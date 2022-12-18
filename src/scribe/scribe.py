@@ -47,8 +47,15 @@ class Scribe():
                     sections_to_notes[section_heading] = []
                 sections_to_notes[section_heading].append(note.text)
             
+            note = Note(
+                title=title.text if title else "",
+                authors=authors.text if authors else "",
+                citation=citation.text if citation else "",
+                tags=self.extract_tags(title.text if title else ""),
+                sections_to_notes=sections_to_notes
+            )
             
-            return "a"
+            return note
 
         # # Read the HTML file
         # with open(r'C:\Projects\scribe\test_resources\exported notes\[Prediction] What war between the USA and China wo - Notebook.html', 'r') as f:
@@ -74,3 +81,10 @@ class Scribe():
             return stripped_parts
         else:
             return []
+
+    def remove_leading_and_trailing_newlines(self, string: str):
+        if string and string[0] == '\n':
+            string = string[1:]
+        if string and string[-1] == '\n':
+            string = string[:-1]
+        return string

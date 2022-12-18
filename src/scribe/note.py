@@ -5,7 +5,7 @@ class Note():
     title: str
     authors: str
     citation: str
-    tags: str
+    tags: list[str]
     sections_to_notes: dict[str, list[str]]
     
     # def __str__(self):
