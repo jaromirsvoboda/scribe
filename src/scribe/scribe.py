@@ -1,4 +1,5 @@
 import os
+import re
 from timeit import default_timer
 
 from bs4 import BeautifulSoup
@@ -6,25 +7,28 @@ from bs4 import BeautifulSoup
 # from markdownify import markdownify as md
 import logging
 
+from scribe.note import Note
+
 
 class Scribe():
     def run(self, root_path: str):
         start = default_timer()
         walk = list(os.walk(root_path))
+        notes: list[Note] = []
         if len(walk) == 0 and root_path.endswith(".html"):
-            self.process_html_file(root_path)
+            notes.append(self.extract_note(root_path))
             return
         else:
             for root, dirs, files in walk:
                 html_files = [file for file in files if file.endswith(".html")]
                 for html_file in html_files:
-                    self.process_html_file(os.path.join(root, html_file))
+                    notes.append(self.extract_note(os.path.join(root, html_file)))
         end = default_timer()
         
         logging.info(f"Scribe: Finished in {end - start} seconds.")
         
         
-    def process_html_file(self, html_path: str) -> str:
+    def extract_note(self, html_path: str) -> Note:
         with open(html_path, encoding='utf-8') as fp:
             # content = fp.read()
             soup = BeautifulSoup(fp, 'html.parser')
@@ -57,3 +61,16 @@ class Scribe():
         # # Save the Markdown to a file
         # with open('output.md', 'w') as f:
         #     f.write(markdown2)
+
+    def extract_tags(self, string: str) -> list[str]:
+        pattern = r'\w+ \[(.*)\]\s*$'
+
+        match = re.search(pattern, string)
+
+        if match:
+            extracted_text = match.group(1)
+            parts = extracted_text.split(',')
+            stripped_parts = [part.strip() for part in parts if part.strip() != '']
+            return stripped_parts
+        else:
+            return []
