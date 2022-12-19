@@ -1,44 +1,59 @@
+# import html2markdown
+# from markdownify import markdownify as md
+import logging
 import os
 import re
 from timeit import default_timer
 
 from bs4 import BeautifulSoup
-# import html2markdown
-# from markdownify import markdownify as md
-import logging
 
 from scribe.note import Note
 
 
 class Scribe():
-    def run(self, root_path: str):
+    def run(self, input_root_path: str, output_path: str):
         start = default_timer()
-        walk = list(os.walk(root_path))
+        notes = self.extract_note(input_root_path)
+        self.write_notes(notes, output_path)
+
+        end = default_timer()
+
+        logging.info(f"Scribe: Finished in {end - start} seconds.")
+
+    def extract_notes(self, input_path: str) -> list[Note]:
+        """
+        Args:
+            input_path (str): Either path to a single HTML file or a directory (or a tree of directories) containing HTML files.
+
+        Returns:
+            list[Note]: _description_
+        """
+        assert os.path.isdir(input_path) or os.path.splitext(input_path)[1] == ".html"
+        walk = list(os.walk(input_path))
         notes: list[Note] = []
-        if len(walk) == 0 and root_path.endswith(".html"):
-            notes.append(self.extract_note(root_path))
-            return
+
+        if len(walk) == 0 and input_path.endswith(".html"):
+            notes.append(self.extract_note(input_path))
         else:
             for root, dirs, files in walk:
                 html_files = [file for file in files if file.endswith(".html")]
                 for html_file in html_files:
                     notes.append(self.extract_note(os.path.join(root, html_file)))
-        end = default_timer()
-        
-        logging.info(f"Scribe: Finished in {end - start} seconds.")
-        
-        
+        return notes
+
+
     def extract_note(self, html_path: str) -> Note:
+        assert os.path.splitext(html_path)[1] == ".html"
         with open(html_path, encoding='utf-8') as fp:
             # content = fp.read()
             soup = BeautifulSoup(fp, 'html.parser')
             print(soup)
-            
+
             title = soup.find('div', {'class': ['bookTitle']})
             authors = soup.find('div', {'class': ['authors']})
             citation = soup.find('div', {'class': ['citation']})
             # sectionHeadings = soup.find('div', {'class': ['sectionHeading']})
-            
+
             all_notes = soup.find_all('div', {'class': ['noteText']})
             sections_to_notes: dict[str, list[str]] = {}
             for note in all_notes:
@@ -46,7 +61,7 @@ class Scribe():
                 if section_heading not in sections_to_notes:
                     sections_to_notes[section_heading] = []
                 sections_to_notes[section_heading].append(note.text)
-            
+
             note = Note(
                 title=title.text if title else "",
                 authors=authors.text if authors else "",
@@ -54,8 +69,16 @@ class Scribe():
                 tags=self.extract_tags(title.text if title else ""),
                 sections_to_notes=sections_to_notes
             )
-            
+
             return note
+
+    def write_notes(self, notes: list[Note], output_path: str):
+        assert os.path.isdir(output_path)
+        for note in notes:
+            self.write_note(note, output_path)
+
+    def write_note(self, note: Note, output_path: str):
+        ...
 
         # # Read the HTML file
         # with open(r'C:\Projects\scribe\test_resources\exported notes\[Prediction] What war between the USA and China wo - Notebook.html', 'r') as f:
