@@ -78,7 +78,9 @@ class Scribe():
             self.write_note(note, output_path)
 
     def write_note(self, note: Note, output_path: str):
-        ...
+        with open(os.path.join(output_path, self.remove_tags(note.title)), "w") as file:
+            note_as_md = note.to_markdown()
+            file.write(note_as_md)
 
         # # Read the HTML file
         # with open(r'C:\Projects\scribe\test_resources\exported notes\[Prediction] What war between the USA and China wo - Notebook.html', 'r') as f:
@@ -91,6 +93,13 @@ class Scribe():
         # # Save the Markdown to a file
         # with open('output.md', 'w') as f:
         #     f.write(markdown2)
+
+    def remove_tags(self, string: str) -> str:
+        last_index_of_opening_bracket = string.rfind('[')
+        if last_index_of_opening_bracket == -1:
+            return string.strip()
+        else:
+            return string[:last_index_of_opening_bracket].strip()
 
     def extract_tags(self, string: str) -> list[str]:
         pattern = r'\w+ \[(.*)\]\s*$'
