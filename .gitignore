@@ -56,3 +56,5 @@ MANIFEST
 results/
 ~$*
 profile.prof
+
+test_resources/outputs/

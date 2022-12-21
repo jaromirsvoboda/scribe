@@ -20,11 +20,12 @@ logging.getLogger().addHandler(logging.StreamHandler())
 logging.info(f"Starting Scribe at {timestamp}.")
 
 @click.command()
-@click.option('--path', default=".", help='Path to the folder containing kindle notes (in .html format)')
-def main(path):
+@click.option('--input_path', default=".", help='Path to the folder containing kindle notes (in .html format, can be nested in sub-folders) or to a single .html file.')
+@click.option('--output_path', default=".", help='Path to the folder where the notes will be saved (in .md format).')
+def main(input_path: str, output_path: str):
     print(path)
     scribe = Scribe()
-    scribe.run(path)
+    scribe.run(input_path=input_path, output_path=output_path)
 
 if __name__ == '__main__':
     main()  # type: ignore

@@ -13,7 +13,8 @@
             "args": [
                 // "--count", "5",
                 // "--path", "c:\\OneDrive\\exported notes"
-                "--path", "C:/Projects/scribe/test_resources/exported notes/Collections_ Is the United States Exceptional_ [Ac - Notebook.html"
+                "--input_path", "C:/Projects/scribe/test_resources/exported notes/Collections_ Is the United States Exceptional_ [Ac - Notebook.html",
+                "--output_path", "C:/Projects/scribe/test_resources/outputs"
                 // "--path", "C:/Projects/scribe/test_resources/exported notes/The March of Folly - Notebook.html"
             ],
             "console": "integratedTerminal"
