@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from functools import cache
 import os
 import re
+import time
 
 from bs4 import BeautifulSoup
 
@@ -22,7 +23,7 @@ class Note():
         with open(html_path, encoding='utf-8') as fp:
             # content = fp.read()
             soup = BeautifulSoup(fp, 'html.parser')
-            print(soup)
+            # print(soup)
 
             title = soup.find('div', {'class': ['bookTitle']})
             authors = soup.find('div', {'class': ['authors']})
@@ -51,13 +52,15 @@ class Note():
 
         match = re.search(pattern, string)
 
+        tags = ["KindleExport"]
+
         if match:
             extracted_text = match.group(1)
             parts = extracted_text.split(',')
             stripped_parts = [part.strip() for part in parts if part.strip() != '']
-            return stripped_parts
-        else:
-            return []
+            tags.extend(stripped_parts)
+        
+        return tags
 
     @staticmethod
     @cache
@@ -70,13 +73,17 @@ class Note():
     
     def to_markdown(self) -> str:
         text = ""
-        text += f"# {self.title}\n"
+        # text += f"# {self.title}\n"
+        # text += "\n"
+        text += f"#### {self.authors}\n"
         text += "\n"
-        text += f"## {self.authors}\n"
+        text += f"#### {self.citation}\n"
         text += "\n"
-        text += f"## {self.citation}\n"
         for tag in self.tags:
             text += f"#{tag}\n"
+        
+        text += f"\n\n- Created: {time.strftime('%Y-%m-%d_%H-%M-%S')}\n"
+        text += "\n---\n\n"
         
         for section, notes in self.sections_to_notes.items():
             text += f"### {section}\n"

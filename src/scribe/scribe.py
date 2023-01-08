@@ -51,7 +51,6 @@ class Scribe():
         with open(os.path.join(output_folder, self.remove_invalid_chars_from_filename(self.remove_tags(note.title)) + ".md"), "w",  encoding="utf-8") as file:
             note_as_md = note.to_markdown()
             file.write(note_as_md)
-            print("a")
 
         # # Read the HTML file
         # with open(r'C:\Projects\scribe\test_resources\exported notes\[Prediction] What war between the USA and China wo - Notebook.html', 'r') as f:
